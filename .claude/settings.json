@@ -1,0 +1,36 @@
+{
+  "model": "claude-sonnet-5-5",
+  "permissionMode": "acceptEdits",
+  "commands": {
+    "enabled": true
+  },
+  "skills": {
+    "enabled": true
+  },
+  "hooks": {
+    "enabled": true
+  },
+  "deny": {
+    "read": [
+      "**/*.env",
+      "**/*.env.*",
+      "data/*.db",
+      "**/*.log"
+    ],
+    "write": [
+      "**/*.env",
+      "**/*.env.*"
+    ],
+    "bash": [
+      "rm -rf /",
+      "rm -rf *",
+      "format C:",
+      "> .env"
+    ]
+  },
+  "defaultBranch": "main",
+  "autoCompact": {
+    "enabled": true,
+    "threshold": 0.8
+  }
+}

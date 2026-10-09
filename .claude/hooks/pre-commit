@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Pre-commit hook: 代码质量检查
+# 位置: .claude/hooks/pre-commit
+
+set -e
+
+echo "🔍 Running pre-commit checks..."
+
+# 1. Go格式检查
+echo "  → Checking Go formatting..."
+if ! gofmt -l . | grep -q .; then
+    echo "    ✓ Go formatting OK"
+else
+    echo "    ✗ Files need formatting:"
+    gofmt -l .
+    echo "    Run: gofmt -s -w ."
+    exit 1
+fi
+
+# 2. Go vet检查
+echo "  → Running go vet..."
+if go vet ./...; then
+    echo "    ✓ Go vet passed"
+else
+    echo "    ✗ Go vet failed"
+    exit 1
+fi
+
+# 3. 测试
+echo "  → Running tests..."
+if go test ./... -short; then
+    echo "    ✓ Tests passed"
+else
+    echo "    ✗ Tests failed"
+    exit 1
+fi
+
+# 4. 敏感文件检查
+echo "  → Checking for sensitive files..."
+if git diff --cached --name-only | grep -E '\.(env|db)$'; then
+    echo "    ✗ Attempting to commit sensitive files:"
+    git diff --cached --name-only | grep -E '\.(env|db)$'
+    echo "    These files should not be committed!"
+    exit 1
+else
+    echo "    ✓ No sensitive files"
+fi
+
+echo "✅ All pre-commit checks passed!"
+exit 0
