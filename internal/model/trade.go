@@ -40,27 +40,54 @@ type LifecycleState struct {
 	CreatedAt    time.Time `json:"created_at"`
 }
 
-// TachibanaSignal represents 20:00 Tachibana trading plan
+// TachibanaSignal represents 20:00 Tachibana trading signal (simplified Phase 1)
 type TachibanaSignal struct {
 	TradeDate   string    `json:"trade_date"`
 	Code        string    `json:"code"`
 	Name        string    `json:"name"`
-	Decision    string    `json:"decision"`     // 布网/观察/排除
-	ZScore      float64   `json:"z_score"`
-	BandNow     string    `json:"band_now"`
-	Tier1Price  float64   `json:"tier1_price"`
-	Tier2Price  float64   `json:"tier2_price"`
-	Tier3Price  float64   `json:"tier3_price"`
-	StopPrice   float64   `json:"stop_price"`
-	ProfitPrice float64   `json:"profit_price"`
-	SharesT1    int       `json:"shares_t1"`
-	SharesT2    int       `json:"shares_t2"`
-	SharesT3    int       `json:"shares_t3"`
-	Notional    float64   `json:"notional"`      // 预计投入
-	RiskAmount  float64   `json:"risk_amount"`   // 风险预算
-	Reason      string    `json:"reason"`
+
+	// 信号类型
+	SignalType  string    `json:"signal_type"`  // trend_probe_entry / trend_confirmation_add / etc
+	Confidence  string    `json:"confidence"`   // High / Medium / Low
+
+	// 价格区间
+	CurrentPrice  float64 `json:"current_price"`
+	EntryZoneLow  float64 `json:"entry_zone_low"`
+	EntryZoneHigh float64 `json:"entry_zone_high"`
+	StopLoss      float64 `json:"stop_loss"`
+
+	// 依据指标
+	LifecycleGrade string  `json:"lifecycle_grade"`
+	LifecycleScore float64 `json:"lifecycle_score"`
+	SpanDays       int     `json:"span_days"`
+	DistFrom20DH   float64 `json:"dist_from_20dh"`
+	ATRNormalized  float64 `json:"atr_normalized"`
+
+	// 提示信息
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Risk        string `json:"risk"`
+	Suggestion  string `json:"suggestion"`
+
+	DataSource  string    `json:"data_source"`
 	CreatedAt   time.Time `json:"created_at"`
 }
+
+// SignalType 常量
+const (
+	SignalTrendProbeEntry      = "trend_probe_entry"
+	SignalTrendConfirmationAdd = "trend_confirmation_add"
+	SignalDistributionReduce   = "distribution_reduce"
+	SignalExitOnRhythmFailure  = "exit_on_rhythm_failure"
+	SignalWaitNoAction         = "wait_no_action"
+)
+
+// Confidence 常量
+const (
+	ConfidenceHigh   = "High"
+	ConfidenceMedium = "Medium"
+	ConfidenceLow    = "Low"
+)
 
 // TrackerPosition represents a position in tracking pool
 type TrackerPosition struct {

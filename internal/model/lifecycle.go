@@ -11,6 +11,7 @@ type LifecycleMetrics struct {
 	DaysSince20DH int // 距离突破20日高点的天数
 
 	// 价格维度
+	ClosePrice    float64 // 当前收盘价
 	PriceRange    float64 // 价格幅度（当前价 - 低点价）
 	PriceRangePct float64 // 价格幅度百分比
 	ATRNormalized float64 // ATR标准化幅度（price_range / atr14）
