@@ -23,25 +23,58 @@
 
 - **Go 1.22+** - [下载地址](https://go.dev/dl/)
 - **Windows 10/11** (主要开发平台)
-- **通达信数据** (可选) - `H:\new_tdx64\vipdoc`
-- **炒股手软件** (可选) - `H:\2025炒股手训练软件`
+- **通达信数据** - `H:\new_tdx64\vipdoc`
 
-### 安装与验证
+### 编译
 
-```powershell
-# 1. 克隆/进入项目目录
+```bash
+# 克隆项目
 cd I:\tradebuddy
 
-# 2. 运行技术验证
-.\verify.ps1
+# 编译主程序
+go build -o tradebuddy.exe ./cmd/tradebuddy
 
-# 3. 确认验证结果
-# ✓ Demo 1: SQLite 读写
-# ✓ Demo 2: Excel 解析
-# ✓ Demo 3: TDX 文件读取
+# 编译集成测试
+go build -o integration-test.exe ./cmd/integration-test
 ```
 
-详细验证指南见 [VERIFY.md](VERIFY.md)
+### 基本使用
+
+```bash
+# 运行完整流程（初选 → 生命周期 → 立花提示）
+./tradebuddy.exe run --date 2026-06-15
+
+# 只运行初选
+./tradebuddy.exe screen --date 2026-06-15
+
+# 只运行生命周期分析
+./tradebuddy.exe lifecycle --date 2026-06-15
+
+# 只运行立花提示
+./tradebuddy.exe tachibana --date 2026-06-15
+
+# 查看历史报告
+./tradebuddy.exe report --date 2026-06-15
+
+# 查看帮助
+./tradebuddy.exe --help
+```
+
+### 输出文件
+
+运行后会生成：
+- **数据库：** `data/tradebuddy.db`
+- **报告目录：** `reports/`
+  - `screen_result_YYYYMMDD.xlsx` - 初选结果
+  - `lifecycle_result_YYYYMMDD.xlsx` - 生命周期分析
+  - `tachibana_result_YYYYMMDD.xlsx` - 立花提示信号
+
+### 运行集成测试
+
+```bash
+# 端到端测试（使用 2026-06-15 数据）
+./integration-test.exe
+```
 
 ---
 
@@ -121,11 +154,12 @@ tradebuddy/
 | 文档 | 说明 | 状态 |
 |------|------|------|
 | [README.md](README.md) | 项目概览（本文件） | ✓ |
-| [AGENTS.md](AGENTS.md) | Agent工作规范 | ✓ |
+| [CLAUDE.md](CLAUDE.md) | 项目配置和编码规范 | ✓ |
 | [VERIFY.md](VERIFY.md) | 技术验证指南 | ✓ |
 | [DESIGN.md](docs/DESIGN.md) | 系统设计文档 | ✓ |
-| [REQUIRE.md](docs/REQUIRE.md) | 需求规格说明 | 进行中 |
-| [TASK.md](docs/TASK.md) | 开发任务清单 | 待创建 |
+| [REQUIRE.md](docs/REQUIRE.md) | 需求规格说明 | ✓ |
+| [TASK.md](docs/TASK.md) | 开发任务清单 | ✓ |
+| [DAY15-SUMMARY.md](docs/DAY15-SUMMARY.md) | Day 15 完成总结 | ✓ |
 
 ---
 
@@ -150,18 +184,22 @@ tradebuddy/
 
 ## 📅 开发计划（三期）
 
-### 第一期：核心引擎 + CLI（2周）⏳
+### 第一期：核心引擎 + CLI（2周）✅
 
 **目标：** 完成选股→分析→交易计划的自动化闭环
 
 - [x] 技术验证（Demo 1-3）
-- [ ] 数据库Schema + 数据访问层
-- [ ] Screener引擎（19:00）
-- [ ] Lifecycle引擎（19:30）
-- [ ] Tachibana引擎（20:00）
-- [ ] CLI工具（成交录入/复盘）
+- [x] 数据库Schema + 数据访问层
+- [x] Screener引擎（19:00）
+- [x] Lifecycle引擎（19:30）
+- [x] Tachibana引擎（20:00）
+- [x] CLI工具（完整流程）
+- [x] Reporter报告生成
+- [x] 集成测试
 
-**交付物：** `tb-cli.exe` + `tradebuddy.db` + Excel报告
+**交付物：** `tradebuddy.exe` + `tradebuddy.db` + Excel报告
+
+**状态：** ✅ 已完成 (Day 15, 2026-10-10)
 
 ---
 
@@ -196,14 +234,28 @@ tradebuddy/
 
 ## 📌 当前状态
 
+**✅ Phase 1 完成 - Day 15 (2026-10-10)**
+
 ```
-[✓] 技术验证完成（Demo 1通过）
+[✓] 技术验证完成
 [✓] 项目结构初始化
-[✓] 数据库Schema设计
-[✓] 数据模型定义
-[✓] 核心文档准备中
-[ ] 第一期开发（进行中）
+[✓] 数据库Schema + Store层
+[✓] 数据源适配（TDX + 腾讯API）
+[✓] 计算工具（MA/ATR/MACD）
+[✓] Screener 强势股初选引擎
+[✓] Lifecycle 生命周期分析引擎
+[✓] Tachibana 立花提示引擎
+[✓] Reporter 报告生成
+[✓] CLI 命令行工具
+[✓] 集成测试框架
+[ ] 第二期：简化GUI
 ```
+
+**可执行文件：**
+- `tradebuddy.exe` - 主CLI工具 (22MB)
+- `integration-test.exe` - 集成测试 (22MB)
+
+详见：[Day 15 总结](docs/DAY15-SUMMARY.md)
 
 ---
 
