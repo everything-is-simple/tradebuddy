@@ -1,0 +1,66 @@
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binaries
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Go workspace file
+go.work
+
+# Dependency directories
+vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# Reports (generated files)
+reports/screen/*.xlsx
+reports/lifecycle/*.xlsx
+reports/tachibana/*.xlsx
+reports/review/*.xlsx
+reports/review/*.md
+
+# Keep directory structure
+!reports/screen/.gitkeep
+!reports/lifecycle/.gitkeep
+!reports/tachibana/.gitkeep
+!reports/review/.gitkeep
+
+# Data files
+data/*.db
+data/test_*.db
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+temp/
+
+# Build artifacts
+dist/
+build/
+
+# Wails
+frontend/node_modules/
+frontend/dist/
+build/bin/
