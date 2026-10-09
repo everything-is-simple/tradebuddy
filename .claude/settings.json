@@ -10,6 +10,9 @@
   "hooks": {
     "enabled": true
   },
+  "agents": {
+    "enabled": true
+  },
   "deny": {
     "read": [
       "**/*.env",
@@ -32,5 +35,12 @@
   "autoCompact": {
     "enabled": true,
     "threshold": 0.8
+  },
+  "modelSelection": {
+    "default": "claude-sonnet-5-5",
+    "architect": "claude-opus-5-5",
+    "code-reviewer": "claude-sonnet-5-5",
+    "test-writer": "claude-sonnet-5-5",
+    "fastTasks": "claude-haiku-5-5"
   }
 }
