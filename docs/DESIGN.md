@@ -1,8 +1,9 @@
-# TradeBuddy 系统设计文档 v1.0
+# TradeBuddy 系统设计文档 v1.1
 
 > 个人量化交易系统 - 纯Go实现，单文件打包
 > 创建日期：2026-10-09
-> 作者：Claude Opus 5.5
+> 更新日期：2026-10-10 (Phase 1 完成)
+> 作者：Claude Sonnet 5.5
 
 ---
 
@@ -13,10 +14,15 @@
 **理论基础：**
 1. **选股层** - 欧奈尔CANSLIM + 达瓦斯箱体 + Minervini趋势模板
 2. **分析层** - 生命周期统计（简化版MALF Lifespan）+ 波段强度评估
-3. **交易层** - 立花义正うねり取り + 林辉太郎分批建仓
+3. **交易层** - 立花义正うねり取り（简化版）+ 价格区间提示
 4. **评价层** - 布伦特·奔富R倍数系统 + 账本恒等式校验
 
-**注：** Phase 1 实现简化版生命周期分析（70%功能覆盖），Phase 2 可升级为完整 MALF v2.1 状态机
+**Phase 1 实现状态：**
+- ✅ Screener 引擎 (100%)
+- ✅ Lifecycle 引擎 (70% MALF功能，Phase 1简化版)
+- ✅ Tachibana 引擎 (25-30% 完整功能，Phase 1简化版)
+- ✅ CLI 工具 (100%)
+- ⏳ Reviewer 复盘引擎 (Phase 2)
 
 **技术特点：**
 - 纯Go实现（Go 1.22+）
@@ -32,72 +38,116 @@
 ┌─────────────────────────────────────────────────────┐
 │              用户交互层 (User Layer)                 │
 ├─────────────────────────────────────────────────────┤
-│  CLI工具 (tb-cli)              │  GUI桌面端 (Wails)  │
-│  - 数据导入                     │  - 仪表盘            │
-│  - 手动触发任务                 │  - 清单查看          │
-│  - 成交录入                     │  - 生命周期可视化    │
-│  - 复盘查看                     │  - 交易计划          │
-│                                 │  - 复盘报告          │
+│  CLI工具 (tradebuddy.exe) ✅                         │
+│  - screen      强势股初选                            │
+│  - lifecycle   生命周期分析                          │
+│  - tachibana   立花提示分析                          │
+│  - run         完整工作流程                          │
+│  - report      历史报告查询                          │
+│                                                      │
+│  GUI桌面端 (Phase 2)                                 │
+│  - 仪表盘                                            │
+│  - 清单查看                                          │
+│  - 生命周期可视化                                    │
+│  - 交易计划                                          │
 └─────────────────────────────────────────────────────┘
                       ↓
 ┌─────────────────────────────────────────────────────┐
 │             业务逻辑层 (Business Layer)              │
 ├─────────────────────────────────────────────────────┤
-│  核心引擎 (Engine)                                   │
-│  ├─ Screener      (19:00 强势股初选)                │
-│  ├─ Lifecycle     (19:30 生命周期分析)              │
-│  ├─ Tachibana     (20:00 立花交易计划)              │
-│  └─ Reviewer      (15:30 每日复盘)                  │
+│  核心引擎 (Engine) ✅                                 │
+│  ├─ Screener      (19:00 强势股初选) ✅              │
+│  ├─ Lifecycle     (19:30 生命周期分析) ✅            │
+│  ├─ Tachibana     (20:00 立花交易计划) ✅            │
+│  └─ Reviewer      (15:30 每日复盘) ⏳               │
 │                                                      │
-│  辅助模块 (Support)                                  │
-│  ├─ Scheduler     (定时任务调度)                    │
-│  ├─ Calculator    (MA/ATR/MACD/摆动点等)            │
-│  ├─ Tracker       (跟踪池状态机)                    │
-│  └─ Reporter      (报告生成)                        │
+│  辅助模块 (Support) ✅                                │
+│  ├─ Calculator    (MA/ATR/MACD等) ✅                 │
+│  ├─ Reporter      (报告生成) ✅                       │
+│  └─ Tracker       (跟踪池状态机) ⏳                  │
 └─────────────────────────────────────────────────────┘
                       ↓
 ┌─────────────────────────────────────────────────────┐
-│             数据访问层 (Data Layer)                  │
+│             数据访问层 (Data Layer) ✅                │
 ├─────────────────────────────────────────────────────┤
-│  Store (SQLite访问)                                  │
-│  ├─ Instruments   (股票元数据)                       │
-│  ├─ BarsDaily     (日线数据)                         │
-│  ├─ ScreenResults (筛选结果)                         │
-│  ├─ LifecycleStates (生命周期状态)                   │
-│  ├─ TachibanaSignals (交易信号)                      │
-│  ├─ Transactions  (成交记录)                         │
-│  ├─ TrackerPositions (跟踪池)                        │
-│  └─ Reviews       (复盘报告)                         │
+│  Store (SQLite访问) ✅                                │
+│  ├─ screen_results      (筛选结果) ✅                │
+│  ├─ lifecycle_metrics   (生命周期指标) ✅            │
+│  ├─ tachibana_signals   (交易信号) ✅                │
+│  ├─ TrackerPositions    (跟踪池) ⏳                  │
+│  └─ Transactions        (成交记录) ⏳                │
 └─────────────────────────────────────────────────────┘
                       ↓
 ┌─────────────────────────────────────────────────────┐
-│            数据源适配层 (DataSource Layer)           │
+│            数据源适配层 (DataSource Layer) ✅         │
 ├─────────────────────────────────────────────────────┤
-│  ├─ TDX Reader    (通达信.day文件读取)               │
-│  ├─ Sina API      (新浪榜单+K线)                     │
-│  ├─ Tencent API   (腾讯前复权K线)                    │
-│  └─ Manual Import (CSV/Excel导入)                   │
+│  ├─ TDX Reader    (通达信.day文件读取) ✅            │
+│  ├─ Tencent API   (腾讯前复权K线，框架) ✅           │
+│  └─ Manager       (数据源管理) ✅                     │
 └─────────────────────────────────────────────────────┘
 ```
+
+**图例：**
+- ✅ 已完成
+- ⏳ 计划中（Phase 2）
 
 ---
 
 ## 三、数据流
 
-### 3.1 每日工作流（自动化）
+### 3.1 每日工作流（CLI实现）
 
 ```
-[数据更新] 18:00-18:30
-  ↓ 拉取全市场日线数据（TDX/腾讯）
-  ↓ 更新股票元数据（ST状态/上市日期）
+[19:00 强势股初选] ✅
+  命令: tradebuddy screen --date YYYY-MM-DD
+  输入: TDX全市场日线数据
+  筛选条件:
+    - 当日涨幅 ≥ 6%
+    - 距52周高点 ≤ 25%
+    - 有足够历史数据
+  输出:
+    - screen_results表
+    - Excel报告: reports/screen_result_YYYYMMDD.xlsx
+  性能: 11722只股票 < 6分钟
   
-[强势股初选] 19:00
-  ↓ 输入：全市场日线
-  ↓ 输出：screen_results表 + Excel报告
+[19:30 生命周期分析] ✅
+  命令: tradebuddy lifecycle --date YYYY-MM-DD
+  输入: 19:00筛选结果
+  分析内容:
+    - 波段持续时间
+    - 价格幅度
+    - ATR标准化
+    - 市场排名（百分位）
+    - 综合评分（0-100）
+    - 评级（A/B/C/D）
+  输出:
+    - lifecycle_metrics表
+    - Excel报告: reports/lifecycle_result_YYYYMMDD.xlsx
+  性能: 151只股票 < 3分钟
   
-[生命周期分析] 19:30
-  ↓ 输入：19:00筛选结果
-  ↓ 输出：lifecycle_states表 + Excel报告
+[20:00 立花提示分析] ✅
+  命令: tradebuddy tachibana --date YYYY-MM-DD
+  输入: 19:30生命周期结果
+  信号类型:
+    - 试探建仓 (trend_probe_entry)
+    - 同向加码 (trend_confirmation_add)
+    - 分批减仓 (distribution_reduce)
+    - 节奏失败 (exit_on_rhythm_failure)
+    - 等待观望 (wait_no_action)
+  输出:
+    - tachibana_signals表
+    - Excel报告: reports/tachibana_result_YYYYMMDD.xlsx
+  性能: 151个信号 < 1分钟
+
+[完整流程] ✅
+  命令: tradebuddy run --date YYYY-MM-DD
+  功能: 自动串联上述三个步骤
+  性能: 总耗时 < 10分钟
+  
+[历史报告查询] ✅
+  命令: tradebuddy report --date YYYY-MM-DD
+  功能: 查看历史分析结果统计
+```
   
 [立花交易计划] 20:00
   ↓ 输入：19:00筛选结果 + 19:30生命周期

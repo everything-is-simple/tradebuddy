@@ -109,43 +109,67 @@ go build -o integration-test.exe ./cmd/integration-test
 ```
 tradebuddy/
 ├── cmd/
-│   ├── verify/          # 技术验证Demo
-│   ├── tb-cli/          # 命令行工具
-│   └── tb-desktop/      # Wails桌面端
+│   ├── tradebuddy/          # CLI主程序 ✅
+│   │   ├── main.go          # 主入口
+│   │   ├── cmd_screen.go    # screen命令
+│   │   ├── cmd_lifecycle.go # lifecycle命令
+│   │   ├── cmd_tachibana.go # tachibana命令
+│   │   ├── cmd_run.go       # run完整流程
+│   │   └── cmd_report.go    # report查询
+│   ├── integration-test/    # 集成测试 ✅
+│   │   └── main.go
+│   └── verify/              # 技术验证Demo ✅
 │
 ├── internal/
-│   ├── store/           # SQLite数据访问层
-│   │   └── migrations/  # 数据库迁移脚本
-│   ├── model/           # 数据模型
-│   ├── datasource/      # 数据源适配（TDX/腾讯/新浪）
-│   ├── calc/            # 计算工具（MA/ATR/MACD/摆动点）
-│   ├── screener/        # 19:00 强势股初选引擎
-│   ├── lifecycle/       # 19:30 生命周期分析引擎
-│   ├── tachibana/       # 20:00 立花交易计划引擎
-│   ├── tracker/         # 跟踪池状态机
-│   └── reporter/        # 报告生成器
+│   ├── store/               # SQLite数据访问层 ✅
+│   │   ├── store.go
+│   │   ├── screen.go
+│   │   ├── lifecycle.go
+│   │   ├── tachibana.go
+│   │   └── migrations/      # 数据库迁移脚本
+│   ├── model/               # 数据模型 ✅
+│   │   ├── trade.go         # 筛选/交易模型
+│   │   └── lifecycle.go     # 生命周期模型
+│   ├── datasource/          # 数据源适配 ✅
+│   │   ├── manager.go       # 数据源管理器
+│   │   ├── tdx/             # TDX读取器
+│   │   └── tencent/         # 腾讯API
+│   ├── calc/                # 计算工具 ✅
+│   │   ├── ma.go            # 均线
+│   │   ├── atr.go           # ATR
+│   │   └── aggregator.go    # K线聚合
+│   ├── screener/            # 19:00强势股初选引擎 ✅
+│   ├── lifecycle/           # 19:30生命周期分析引擎 ✅
+│   ├── tachibana/           # 20:00立花交易计划引擎 ✅
+│   ├── reporter/            # 报告生成器 ✅
+│   └── tracker/             # 跟踪池状态机 ⏳
 │
 ├── data/
-│   ├── tradebuddy.db    # SQLite数据库（自动创建）
-│   └── config.yaml      # 配置文件
+│   └── tradebuddy.db        # SQLite数据库（自动创建）
 │
-├── reports/             # 每日Excel报告输出
-│   ├── screen/
-│   ├── lifecycle/
-│   ├── tachibana/
-│   └── review/
+├── reports/                 # Excel报告输出 ✅
+│   ├── screen_result_*.xlsx
+│   ├── lifecycle_result_*.xlsx
+│   └── tachibana_result_*.xlsx
 │
-├── docs/
-│   ├── DESIGN.md        # 系统设计文档 ⭐
-│   ├── REQUIRE.md       # 需求规格说明 ⭐
-│   └── TASK.md          # 开发任务清单 ⭐
+├── docs/                    # 项目文档 ✅
+│   ├── DESIGN.md            # 系统设计文档
+│   ├── REQUIRE.md           # 需求规格说明
+│   ├── TASK.md              # 开发任务清单
+│   ├── USAGE.md             # 使用手册
+│   ├── PHASE1-REPORT.md     # Phase 1完成报告
+│   └── DAY15-SUMMARY.md     # Day 15总结
 │
 ├── go.mod
 ├── go.sum
-├── README.md            # 本文件
-├── AGENTS.md            # Agent工作规范
-└── VERIFY.md            # 技术验证指南
+├── README.md                # 本文件
+├── CLAUDE.md                # 项目配置和编码规范
+└── VERIFY.md                # 技术验证指南
 ```
+
+**图例：**
+- ✅ 已完成（Phase 1）
+- ⏳ 计划中（Phase 2）
 
 ---
 
